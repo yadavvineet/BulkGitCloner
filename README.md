@@ -8,6 +8,9 @@ Bulk Git Cloner (and updater) solves this problems. You can define configuration
 
 **PS: Current code works. Refactoring is planned, not immediately. PRs are welcome**
 
+## Download
+[Download the latest release from here](https://github.com/yadavvineet/BulkGitCloner/releases/tag/1.0)
+
 ## What's New
 
 - Organization Mode (Enterprise GitHub) - Now you can clone all your enterprise github repositories directly. Just define the hostname of your enterprise github, generate a [PAT](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) token and you are good to go. The application will fetch all your repos directly. Settings can be defined to update base configuration each time file is selected.
