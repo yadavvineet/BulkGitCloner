@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulkGitCloner", "BulkGitCloner\BulkGitCloner.csproj", "{39B298F7-DFF0-4EB1-A914-F6686E7834B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39B298F7-DFF0-4EB1-A914-F6686E7834B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39B298F7-DFF0-4EB1-A914-F6686E7834B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39B298F7-DFF0-4EB1-A914-F6686E7834B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39B298F7-DFF0-4EB1-A914-F6686E7834B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {790AD669-7AF2-4A22-BD64-B1FBC1766167}
+	EndGlobalSection
+EndGlobal
