@@ -15,7 +15,7 @@ namespace BulkGitCloner
 {
     internal class Program
     {
-        private static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); // directory of the git repository
+        private static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static string userName;
         private static string pat;
         private static GitCloneConfiguration configuration = null;
@@ -417,7 +417,7 @@ namespace BulkGitCloner
                         {
                             var index = gitUrl.LastIndexOf('/');
                             var index2 = gitUrl.IndexOf(".git");
-                            repoName = gitUrl.Substring(index+1, index2 - index-1);
+                            repoName = gitUrl.Substring(index + 1, index2 - index - 1);
                         }
 
                         Console.Write($"Enter folder name [{repoName}]: ");

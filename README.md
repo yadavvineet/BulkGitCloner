@@ -32,6 +32,7 @@ Bulk Git Cloner (and updater) solves this problems. You can define configuration
 
 1. Sometimes the Banner messages show in between directly.
 2. Banner should not show while pull operation is in progress.
+3. Downloading progress not correct, all thread show are 0 index based.
 
 ## Usage
 
