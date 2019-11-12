@@ -27,6 +27,7 @@ Bulk Git Cloner (and updater) solves this problems. You can define configuration
 * Remember last work directory used.
 * Generic Code refactoring.
 * Ability to fire all command sequence from switches as command line arguments to assist in scripting needs.
+* Adding interface to edit configuration sets. Please edit manually for now.
 
 ## Known issues
 
