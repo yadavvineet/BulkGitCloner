@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using LibGit2Sharp;
+using LibGit2Sharp.Handlers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Management.Automation;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -562,15 +562,24 @@ namespace BulkGitCloner
                 var folder = item.DirectoryName;
                 try
                 {
-                    if (Directory.Exists(Path.Combine(baseFolder, folder, ".git")))
-                    {
-                        Console.WriteLine($"Pulling {repo} in folder {folder}");
-                        UpdateRepo(repo, baseFolder, folder, hardPull);
-                    }
-                    else
+                    if (!Directory.Exists(Path.Combine(baseFolder, folder)))
                     {
                         Console.WriteLine($"Cloning {repo} in folder {folder}");
                         CreateAndClone(repo, baseFolder, folder);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var repository = new Repository(Path.Combine(baseFolder, folder));
+                            UpdateRepo(repository, repo, baseFolder, folder, hardPull);
+                        }
+                        catch (RepositoryNotFoundException e)
+                        {
+                            Directory.Delete(Path.Combine(baseFolder, folder), true);
+                            Console.WriteLine($"Cloning {repo} in folder {folder}");
+                            CreateAndClone(repo, baseFolder, folder);
+                        }
                     }
                 }
                 catch (Exception)
@@ -586,32 +595,69 @@ namespace BulkGitCloner
 
         private static void CreateAndClone(string repo, string baseFolder, string folder)
         {
-            using (var powershell = PowerShell.Create())
+            var co = new CloneOptions();
+            if (configuration.AuthRequired)
             {
-                // this changes from the user folder that PowerShell starts up with to your git repository
-                powershell.AddScript($"cd {Path.Combine(baseFolder)}");
-                powershell.AddScript($@"git clone {repo} {folder}");
-                Collection<PSObject> results = powershell.Invoke();
+                co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials
+                { Username = configuration.Username, Password = configuration.PasswordHash };
             }
+
+            var repostory = Repository.Clone(repo, Path.Combine(baseFolder, folder), co);
+            Console.WriteLine(repostory);
         }
 
-        private static void UpdateRepo(string repo, string baseFolder, string folder, bool hardPull = false)
+        private static void UpdateRepo(Repository repository, string repo, string baseFolder, string folder,
+            bool hardPull = false)
         {
-            using (var powershell = PowerShell.Create())
+            if (hardPull)
             {
-                // this changes from the user folder that PowerShell starts up with to your git repository
-                powershell.AddScript($"cd  {Path.Combine(baseFolder, folder)}");
-                if (hardPull)
-                {
-                    powershell.AddScript($@"git reset --hard");
-                    powershell.AddScript($@"git clean -f");
-                    powershell.AddScript($@"git clean -fd");
-                    powershell.AddScript(@"git checkout master");
-                    powershell.AddScript(@"git fetch --all --prune");
-                }
-                powershell.AddScript(@"git pull");
-                Collection<PSObject> results = powershell.Invoke();
+                repository.Reset(ResetMode.Hard);
+                repository.RemoveUntrackedFiles();
             }
+
+            var branch = repository.Branches["master"];
+            if (branch == null)
+            {
+                // repository return null object when branch not exists
+                Console.WriteLine($"Master not found for {repo}");
+                return;
+            }
+
+            var currentBranch = Commands.Checkout(repository, branch);
+            var options = new PullOptions
+            {
+                FetchOptions = new FetchOptions()
+                {
+                    TagFetchMode = TagFetchMode.All,
+                    Prune = true,
+                    OnTransferProgress = OnTransferProgress
+                }
+            };
+            if (configuration.AuthRequired)
+            {
+                options.FetchOptions.CredentialsProvider = new CredentialsHandler(
+                    (url, usernameFromUrl, types) =>
+                        new UsernamePasswordCredentials()
+                        {
+                            Username = configuration.Username,
+                            Password = configuration.PasswordHash
+                        });
+            }
+
+            var uname = repository.Config.Get<string>("user.namse");
+            var uemail = repository.Config.Get<string>("user.email");
+            if (uname == null || uemail == null)
+            {
+                Console.WriteLine($"Username and email not defined for repository {repo}. Please update repository settings");
+                return;
+            }
+            Commands.Pull(repository, new Signature(uname.Value, uemail.Value, DateTimeOffset.UtcNow), options);
+        }
+
+        private static bool OnTransferProgress(TransferProgress progress)
+        {
+            Console.Write(">");
+            return true;
         }
     }
 }
