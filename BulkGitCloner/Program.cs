@@ -170,7 +170,7 @@ namespace BulkGitCloner
                 {
                     pat = EncryptionUtils.Decrypt(configuration.PasswordHash, password);
                 }
-                catch (CryptographicException e)
+                catch (CryptographicException)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid Password");
@@ -574,7 +574,7 @@ namespace BulkGitCloner
                             var repository = new Repository(Path.Combine(baseFolder, folder));
                             UpdateRepo(repository, repo, baseFolder, folder, hardPull);
                         }
-                        catch (RepositoryNotFoundException e)
+                        catch (RepositoryNotFoundException)
                         {
                             Directory.Delete(Path.Combine(baseFolder, folder), true);
                             Console.WriteLine($"Cloning {repo} in folder {folder}");
@@ -603,7 +603,7 @@ namespace BulkGitCloner
             }
 
             var repostory = Repository.Clone(repo, Path.Combine(baseFolder, folder), co);
-            Console.WriteLine(repostory);
+            //Console.WriteLine(repostory);
         }
 
         private static void UpdateRepo(Repository repository, string repo, string baseFolder, string folder,
@@ -644,7 +644,7 @@ namespace BulkGitCloner
                         });
             }
 
-            var uname = repository.Config.Get<string>("user.namse");
+            var uname = repository.Config.Get<string>("user.name");
             var uemail = repository.Config.Get<string>("user.email");
             if (uname == null || uemail == null)
             {
