@@ -18,7 +18,7 @@ Bulk Git Cloner (and updater) solves this problems. You can define configuration
 - Hard pull - Reset all local changes, remove obsolete branches and bring your code to latest head on master branch.
 - Secured Credentials Storage - Credentials can now be stored to prevent them entering each time. The password is encrypted by a key string using AES256 bit encryption.
 - Multi Threaded to parallelize work loads.
-
+- Exclude or ignore some repos from list of required.
 
 
 ## What's in Pipeline
@@ -27,6 +27,7 @@ Bulk Git Cloner (and updater) solves this problems. You can define configuration
 * Remember last work directory used.
 * Generic Code refactoring.
 * Ability to fire all command sequence from switches as command line arguments to assist in scripting needs.
+* Adding interface to edit configuration sets. Please edit manually for now.
 
 ## Known issues
 
